@@ -11,6 +11,11 @@ export default function UploadBox() {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    // Environmental readings for the fusion model.
+    const [temperature, setTemperature] = useState("26.5");
+    const [humidity, setHumidity] = useState("80");
+    const [windSpeed, setWindSpeed] = useState("8");
+
     function handleChange(e) {
 
         const selectedFile = e.target.files[0];
@@ -31,13 +36,16 @@ export default function UploadBox() {
 
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("temperature_c", temperature);
+        formData.append("humidity_percent", humidity);
+        formData.append("wind_speed_kmh", windSpeed);
 
         try {
 
             setLoading(true);
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/predict",
+                "http://127.0.0.1:8000/predict-fusion",
                 formData,
                 {
                     headers: {
@@ -52,7 +60,9 @@ export default function UploadBox() {
 
             console.error(error);
 
-            alert("Prediction failed.");
+            const message = error.response?.data?.detail || "Prediction failed.";
+
+            alert(message);
 
         } finally {
 
@@ -112,12 +122,46 @@ export default function UploadBox() {
 
         </label>
 
+        <div className="env-inputs">
+
+            <label>
+                Temperature (°C)
+                <input
+                    type="number"
+                    step="0.1"
+                    value={temperature}
+                    onChange={(e) => setTemperature(e.target.value)}
+                />
+            </label>
+
+            <label>
+                Humidity (%)
+                <input
+                    type="number"
+                    step="0.1"
+                    value={humidity}
+                    onChange={(e) => setHumidity(e.target.value)}
+                />
+            </label>
+
+            <label>
+                Wind Speed (km/h)
+                <input
+                    type="number"
+                    step="0.1"
+                    value={windSpeed}
+                    onChange={(e) => setWindSpeed(e.target.value)}
+                />
+            </label>
+
+        </div>
+
         <button
             className="predict-btn"
             onClick={predict}
             disabled={loading}
         >
-            {loading ? "Predicting..." : "🌿 Predict Disease"}
+            {loading ? "Predicting..." : "🌿 Predict"}
         </button>
 
         <ResultCard result={result}/>

@@ -20,10 +20,7 @@ export default function ResultCard({ result }) {
                 <strong>{result.status}</strong>
             </div>
 
-            <div className="row">
-                <span>Confidence</span>
-                <strong>{result.confidence}%</strong>
-            </div>
+           
 
         </div>
 

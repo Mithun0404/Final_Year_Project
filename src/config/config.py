@@ -129,3 +129,42 @@ BRIGHTNESS = 0.10
 # ============================================================
 
 HEALTHY_CLASS = "Healthy"
+
+
+# ============================================================
+# Fusion Model (Image + Environmental Sensors)
+# ============================================================
+# Additive section for the multimodal fusion model. Nothing above this
+# point is used differently by the original image-only pipeline.
+
+# Environmental CSV lives outside Model/, at the project root.
+ENV_CSV_PATH = PROJECT_ROOT.parent / "mango_disease_environmental_dataset.csv"
+
+# Columns in the CSV that feed the environmental MLP branch, in order.
+ENV_FEATURE_COLS = ["temperature_c", "humidity_percent", "wind_speed_kmh"]
+
+# CSV uses "mango_leaf_class" with spaces (e.g. "Die Back"); the dataset
+# folders / CLASS_NAMES use underscores (e.g. "Die_Back"). This maps
+# CSV label -> CLASS_NAMES label.
+ENV_CLASS_NAME_MAP = {name.replace("_", " "): name for name in CLASS_NAMES}
+
+# Once real per-image sensor readings exist, add an "image_filename" column
+# to a CSV and set this to that column name to switch from class-level
+# sampling to exact per-image pairing (see src/data/env_lookup.py).
+ENV_IMAGE_FILENAME_COL = None
+
+FUSION_MODEL_NAME = "mango_fusion_classifier.keras"
+
+ENV_EMBED_UNITS = 16
+
+FUSION_DENSE_UNITS = 128
+
+FUSION_DROPOUT = 0.30
+
+FUSION_HEAD_EPOCHS = 15
+
+FUSION_FINETUNE_EPOCHS = 15
+
+FUSION_HEAD_LR = 1e-3
+
+FUSION_FINETUNE_LR = 1e-5
